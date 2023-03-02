@@ -1,10 +1,33 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
 </head>
 <body>
+<form method="POST" action="{% url 'payment:transfer' %}">
+    {% csrf_token %}
+    <label for="phone_number">Recipient Phone Number:</label>
+    <input type="text" name="phone_number" id="phone_number" required>
+    <br>
+    <label for="amount">Amount:</label>
+    <input type="number" name="amount" id="amount" min="1" required>
+    <br>
+    <button type="submit">Transfer</button>
+</form>
+
+<form method="post" action="{% url 'rest_login' %}">
+    {% csrf_token %}
+    <label for="username">Username:</label>
+    <input type="text" name="username" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" name="password" required><br><br>
+    <button type="submit">Login</button>
+</form>
+
 
 </body>
 </html>

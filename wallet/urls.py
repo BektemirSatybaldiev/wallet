@@ -19,14 +19,18 @@ from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
 from rest_framework_swagger.views import get_swagger_view
 
+from payment.views import base_view
+
 API_TITLE = 'Wallet API'
 API_DESCRIPTION = 'A Web API for creating and editing customers wallet.'
 schema_view = get_swagger_view(title=API_TITLE)
 
+
 urlpatterns = [
+    path('', base_view, name='base'),
     path('admin/', admin.site.urls),
-    path('', include('payment.urls')),
-    path('api_auth/', include('rest_framework.urls')),
+    path('payment/', include('payment.urls')),
+    path('api/api_auth/', include('rest_framework.urls')),
     path('api/rest_auth/', include('rest_auth.urls')),
     path('api/rest_auth/registration', include('rest_auth.registration.urls')),
     path('docs/', include_docs_urls(title=API_TITLE, description=API_DESCRIPTION)),

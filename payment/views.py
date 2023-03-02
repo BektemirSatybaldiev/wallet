@@ -1,11 +1,17 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
+from payment.forms import TransferForm
 from payment.models import Customer, Balance
 from payment.permissions import IsOwnerOrReadOnly
 from payment.serialaizers import CustomerSerializer, UserSerializer
 from django.db import transaction
+
+
+def base_view(request):
+    return render(request, 'base.html')
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
@@ -26,8 +32,10 @@ class TransferViewSet(viewsets.ViewSet):
     permission_classes = (IsOwnerOrReadOnly,)
 
     def create(self, request):
-        recipient_phone_number = request.data.get('phone_number')
-        amount = request.data.get('amount')
+        serializer = TransferForm(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        recipient_phone_number = serializer.validated_data.get('phone_number')
+        amount = serializer.validated_data.get('amount')
         current_customer = request.user.customer
 
         try:
@@ -53,4 +61,4 @@ class TransferViewSet(viewsets.ViewSet):
             recipient_customer.balance.amount += amount
             recipient_customer.balance.save()
 
-        return Response({'success': 'Money transfer successful.'}, status=status.HTTP_200_OK)
+        return Response({'success': 'Money transferred successful.'}, status=status.HTTP_200_OK)

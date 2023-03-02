@@ -6,8 +6,10 @@ app_name = 'payment'
 router = SimpleRouter()
 router.register('users', UserViewSet, basename='users')
 router.register('customers', CustomerViewSet, basename='customers')
-router.register('transfer', TransferViewSet, basename='transfer')
+
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('transfer/', TransferViewSet.as_view({'post': 'create'}), name='transfer'),
 ]
+
